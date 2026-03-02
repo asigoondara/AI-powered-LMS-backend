@@ -23,3 +23,18 @@ def create_user(name: str, email: str, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(user)
     return user
+
+from fastapi import Query
+from ai_client import get_ai_response
+
+@app.get("/ai/recommendations/")
+def course_recommendations(user_name: str = Query(...)):
+    prompt = f"Suggest 3 courses for a student named {user_name} based on their interests."
+    ai_result = get_ai_response(prompt)
+    return {"recommendations": ai_result}
+
+@app.get("/ai/quiz/")
+def generate_quiz(course_title: str = Query(...)):
+    prompt = f"Generate a 5-question quiz for the course titled '{course_title}'."
+    ai_result = get_ai_response(prompt)
+    return {"quiz": ai_result}
